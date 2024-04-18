@@ -49,5 +49,5 @@ Con el entorno virtual activado, instala las dependencias:
 ### Ejecución de la Aplicación
 Para ejecutar la aplicación:
 ```bash
-    uvicorn app.main:app --reload
+    uvicorn main:app --reload
 ```

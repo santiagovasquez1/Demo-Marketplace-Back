@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel
+from pydantic import BaseModel,EmailStr
 
 class User(BaseModel):
     status:int
@@ -7,7 +7,7 @@ class User(BaseModel):
     company_name: str
     contact: str
     phone: int
-    email: str
+    email: EmailStr
     region:int
     city:int
     agent_id:int

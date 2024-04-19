@@ -51,7 +51,7 @@ async def get_user(user_id: int):
 
 
 
-@user.put("/update/{update}", tags=["User"])
+@user.put("/update", tags=["User"])
 async def update_user(update_data: Update):
     update_data= dict(update_data)
     update_query = users.update().where(users.c.user_id == update_data["user_id"]).values(

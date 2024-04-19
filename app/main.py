@@ -3,6 +3,7 @@ from routes.user import user
 from routes.regions import region
 from routes.cities import city
 from routes.login import login
+from routes.agent import agents
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -11,8 +12,8 @@ app = FastAPI()
 app.include_router(router=user, prefix="/api")
 app.include_router(router=region, prefix="/api")
 app.include_router(router=city, prefix="/api")
-app.include_router(router=city, prefix="/api")
 app.include_router(router=login, prefix="/api")
+app.include_router(router=agents, prefix="/api")
 
 
 app.add_middleware(

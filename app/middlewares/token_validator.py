@@ -26,15 +26,16 @@ async def current_user(
         )
     try:
         payload= jwt.decode(
-            token, os.getenv('SECRET_KEY'),algorithms=[os.getenv('HS256')]
+            token, os.getenv('SECRET_KEY'),algorithms=['HS256']
         )
-        username:str= payload.get("sub")
+        username = payload.get("sub")["email"]
+
         if username is None:
             raise credentials_exeptions
         token_data= TokenData(username=username)
     except JWTError:
         raise credentials_exeptions
-    user=get_user(username= token_data.username)
+    user=get_user_email(username= token_data.username)
     if user is None:
         raise credentials_exeptions
     return user

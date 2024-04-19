@@ -4,6 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from clients.db import conn
 from models.user import users
 from routes.user import pwd_context
+from models.schemas.token import Token
 from middlewares.token_creation import create_token
  
 
@@ -15,9 +16,16 @@ def verify_password(plain_password, hashed_password):
 def authenticate_user(username: str, password: str):
     
     user = conn.execute(users.select().where(users.c.email == username)).fetchone()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     user = dict(user._mapping)
 
-    if not user or not verify_password(password, user["password"]):
+    if not verify_password(password, user["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -29,16 +37,18 @@ def authenticate_user(username: str, password: str):
             detail="Your User hasn´t been acepted or is pending",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
     return user
 
 
 
 login=router = APIRouter()
 
-@login.post("/token")
+@login.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(form_data.username, form_data.password)
-    access_token= create_token(data={"sub": user["email"]})
+    del user["password"]
+    access_token= create_token(data={"sub": user})
     return {"access_token": access_token, "token_type": "bearer"}
 
 
